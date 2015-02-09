@@ -266,7 +266,11 @@ python do_bootimg() {
     if d.getVar("EFI", True) == "1":
         bb.build.exec_func('build_efi_cfg', d)
     bb.build.exec_func('build_hddimg', d)
-    bb.build.exec_func('build_iso', d)
+
+    if [ "${TARGET_ARCH}" == "aarch64" ]:
+             return
+    else:
+            bb.build.exec_func('build_iso', d)
 }
 
 IMAGE_TYPEDEP_iso = "ext3"
