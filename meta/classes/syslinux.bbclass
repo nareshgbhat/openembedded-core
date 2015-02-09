@@ -17,7 +17,15 @@
 # ${SYSLINUX_SERIAL_TTY} - Set alternate console=tty... kernel boot argument
 # ${SYSLINUX_KERNEL_ARGS} - Add additional kernel arguments
 
-do_bootimg[depends] += "${MLPREFIX}syslinux:do_populate_sysroot \
+def boot_image_depends(bb, d):
+         import re
+         deps = bb.data.getVar('TARGET_PREFIX', d, True)
+         if re.search("(x86_64|i.86).*",deps):
+                 return "${MLPREFIX}syslinux:do_populate_sysroot"
+         if re.search("aarch64",deps):
+                 return ""
+BIMGDEP = "${@boot_image_depends(bb, d)}"
+do_bootimg[depends] += "${BIMGDEP} \
                         syslinux-native:do_populate_sysroot"
 
 SYSLINUXCFG  = "${S}/syslinux.cfg"
